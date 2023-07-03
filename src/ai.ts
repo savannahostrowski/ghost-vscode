@@ -1,20 +1,19 @@
-const {Configuration, OpenAIApi} = require("openai");
+import * as openai from "openai";
 
-const configuration = new Configuration({
-    apiKey: process.env.OPENAI_API_KEY,
-});
+export async function chatGPTRequest(prompt: string) {
+    const configuration = new openai.Configuration({
+        apiKey: process.env.OPENAI_API_KEY,
+    });
+    
+    const openaiClient = new openai.OpenAIApi(configuration);
 
-const openai = new OpenAIApi(Configuration);
-
-// Make a ChatGPT request with a custom prompt that returns a response and handles errors
-async function chat(prompt: String) {
     try {
-        const gptResponse = await openai.createChatCompletion({
+        const gptResponse = await openaiClient.createChatCompletion({
             model: "gpt-3.5-turbo",
             messages: [{role: "user", content: prompt}],
         });
-        return gptResponse.data.choices[0].text;
+        return gptResponse.data.choices[0].message?.content;
     } catch (err) {
-        throw err;
+        console.error(err);
     }
 }
