@@ -9,10 +9,6 @@
   * The file exports one function, `activate`, which is called the very first time your extension is activated (in this case by executing the command). Inside the `activate` function we call `registerCommand`.
   * We pass the function containing the implementation of the command as the second parameter to `registerCommand`.
 
-## Setup
-
-* install the recommended extensions (amodio.tsl-problem-matcher and dbaeumer.vscode-eslint)
-
 
 ## Get up and running straight away
 

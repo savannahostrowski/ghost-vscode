@@ -6,21 +6,36 @@ import * as vscode from 'vscode';
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "ghost-vscode" is now active!');
+	let disposable = vscode.commands.registerCommand('ghost-vscode.generate', () => {
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('ghost-vscode.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
 		vscode.window.showInformationMessage('Hello World from ghost-vscode!');
+
+		// Ask for API key in command palette and store as environment variable
+		if (!process.env.OPENAI_API_KEY) {
+			vscode.window.showInputBox({
+				placeHolder: "Enter your OpenAI API key",
+				prompt: "Enter your OpenAI API key",
+				password: true
+			}).then((value) => {
+				if (value) {
+					process.env.OPENAI_API_KEY = value;
+				}
+			});
+		}
+
+		
+
+		// Confirm detected languages
+
+		// Ask for tasks to generate
+
+		//Confirm GHA
+
+		//Output to file
 	});
 
 	context.subscriptions.push(disposable);
 }
 
 // This method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() { }
