@@ -3,13 +3,20 @@ import * as path from 'path';
 import * as assert from 'assert';
 
 export async function createTempFile(contents: string) {
-
     const currentPath = vscode.workspace.workspaceFolders?.[0].uri.fsPath;
     assert(currentPath !== undefined);
     const newFile = vscode.Uri.parse('untitled:' + path.join(currentPath, 'temp.yml'));
 
     vscode.workspace.openTextDocument(newFile).then(document => {
         const edit = new vscode.WorkspaceEdit();
+
+        console.log(document.isDirty);
+
+        // If a temp file already exists, delete its contents
+        if (document.isDirty) {
+            edit.delete(document.uri, new vscode.Range(0, 0, document.lineCount, 0));
+        }
+
         edit.insert(newFile, new vscode.Position(0, 0), contents);
         return vscode.workspace.applyEdit(edit).then(success => {
             if (success) {
@@ -30,7 +37,3 @@ export async function writeFile(contents: string) {
     vscode.workspace.fs.writeFile(vscode.Uri.file(ghostFile), Buffer.from(contents ?? ''));
 
 }
-
-
-
-

@@ -35,7 +35,7 @@ export function activate(context: vscode.ExtensionContext) {
 				Return a comma-separated list of the languages used by this project.`;
 			} else {
 				prompt = `Use the following files to tell me what languages are being used in this project.
-				Return a comma-separated list with just the unique language names:${fileNames.join(', ')}. 
+				Only return a comma-separated list with just the unique language names:${fileNames.join(', ')}. 
 				The response should not include any additional text other than the list of languages.`;
 				initialLangPrompt = false;
 			}
@@ -59,12 +59,13 @@ export function activate(context: vscode.ExtensionContext) {
 		// Add tasks
 		var confirmedTasks = false;
 		var GHA: string | undefined;
-		var userDefinedTasks = await vscode.window.showInputBox({
-			placeHolder: "Enter tasks (comma separated)",
-			prompt: "What tasks should Ghost include in your GitHub Action workflow?",
-		});
+		var userDefinedTasks: string | undefined;
 
-		while (confirmedLanguages && userDefinedTasks && apikey && !confirmedTasks) {
+		while (confirmedLanguages && apikey && !confirmedTasks) {
+			userDefinedTasks = await vscode.window.showInputBox({
+				placeHolder: "Enter tasks (comma separated)",
+				prompt: "What tasks should Ghost include in your GitHub Action workflow?",
+			});
 			var prompt = `For a ${detectedLanguages} program, generate a GitHub Action workflow that will include the following tasks: ${userDefinedTasks}. 
 				Name it "Ghost-generated pipeline". Leave placeholders for things like version and at the end of generating the
 				GitHub Action, tell the user what their next steps should be in a comment. Do not surround the content with a codeblock. Make sure it's
@@ -76,20 +77,15 @@ export function activate(context: vscode.ExtensionContext) {
 			createTempFile(GHA);
 
 			// Confirm tasks
-			const result = await vscode.window.showInformationMessage(`Would you like to save the workflow?`, 'Yes', 'No, update tasks', 'Cancel');
+			const result = await vscode.window.showInformationMessage(`Would you like to save the workflow to .github/workflows?`, 'Yes', 'No, update tasks', 'Cancel');
 			if (result === "Cancel") {
 				return;
 			} else if (result === 'Yes') {
 				confirmedTasks = true;
 				writeFile(GHA);
-			} else {
-				userDefinedTasks = await vscode.window.showInputBox({
-					placeHolder: "Enter tasks (comma separated)",
-					prompt: "What tasks should Ghost include in your GitHub Action workflow?",
-				});
 			}
 		}
-		
+
 	});
 
 	context.subscriptions.push(disposable);
