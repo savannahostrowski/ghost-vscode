@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as ai from './ai';
 import * as assert from 'assert';
-import { createTempFile, writeGHAFile } from './helpers';
+import { createTempFile, writeFile } from './helpers';
 
 let apikey: string | undefined;
 
@@ -81,11 +81,8 @@ export function activate(context: vscode.ExtensionContext) {
 				return;
 			} else if (result === 'Yes') {
 				confirmedTasks = true;
-
-				//Output GHA to a file called ghost-<timestamp>.yml in the .github/workflows directory
-				writeGHAFile(GHA);
+				writeFile(GHA);
 			} else {
-
 				userDefinedTasks = await vscode.window.showInputBox({
 					placeHolder: "Enter tasks (comma separated)",
 					prompt: "What tasks should Ghost include in your GitHub Action workflow?",
@@ -97,5 +94,3 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(disposable);
 }
-
-// function generateAndAcceptResponse(prompt: string, altPrompt:string)

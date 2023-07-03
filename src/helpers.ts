@@ -21,7 +21,7 @@ export async function createTempFile(contents: string) {
     });
 }
 
-export async function writeGHAFile(contents: string) {
+export async function writeFile(contents: string) {
     const currentPath = vscode.workspace.workspaceFolders?.[0].uri.fsPath;
     assert(currentPath !== undefined);
     const ghostDir = path.join(currentPath, '.github/workflows');
