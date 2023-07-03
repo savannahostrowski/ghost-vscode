@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 
 import * as ai from './ai';
-import { ChatCompletionResponseMessage } from 'openai';
+import path = require('path');
 
 let apikey: string | undefined;
 
@@ -24,13 +24,13 @@ export function activate(context: vscode.ExtensionContext) {
 
 		// Make GPT request
 		var confirmedLanguages = false;
-		var userLanguageCorrection: string | undefined;
+		var additionalProjectInfo: string | undefined;
 		var detectedLanguages: string | undefined;
 		var initialLangPrompt = true;
 
-		while (!confirmedLanguages) {
+		while (!confirmedLanguages && apikey) {
 			var prompt: string;
-			if (!userLanguageCorrection && !detectedLanguages && !initialLangPrompt) {
+			if (!additionalProjectInfo && !detectedLanguages && !initialLangPrompt) {
 				prompt = `You said this project uses the following languages ${detectedLanguages} (detected from the following files: ${fileNames.join(', ')}). 
 				According to the user, this is not correct. Here's some additional info from the user: %v.
 				Return a comma-separated list of the languages used by this project.`;
@@ -39,28 +39,60 @@ export function activate(context: vscode.ExtensionContext) {
 				Return a comma-separated list with just the unique language names:${fileNames.join(', ')}. 
 				The response should not include any additional text other than the list of languages.`;
 				initialLangPrompt = false;
-			}
+			}			
 
-			detectedLanguages = await ai.chatGPTRequest(prompt);
+			var detectedLanguages = await ai.chatGPTRequest(prompt);
 
-			const confirm = await vscode.window.showInformationMessage(`Ghost detected the following languages in your codebase: ${detectedLanguages}. Is this correct?`, 'Yes', 'No');
-			if (confirm === 'Yes') {
+			// Confirm languages
+			const result = await vscode.window.showInformationMessage(`Ghost detected the following languages in your codebase: ${detectedLanguages}. Is this correct?`, 'Yes', 'No', 'Cancel');
+			if (result === "Cancel") {
+				return;
+			} else if (result === 'Yes') {
 				confirmedLanguages = true;
+				// Reset additionalProjectInfo for use in tasks
+				additionalProjectInfo = undefined;
 			} else {
-				userLanguageCorrection = await vscode.window.showInputBox({
+				additionalProjectInfo = await vscode.window.showInputBox({
 					placeHolder: "Enter languages (comma separated)",
 					prompt: "Give Ghost some more info about the languages used in this project",
 				});
 			}
 		}
 
+		// Add tasks
+		var confirmedTasks = false;
+		var userDefinedTasks = await vscode.window.showInputBox({
+			placeHolder: "Enter tasks (comma separated)",
+			prompt: "What tasks should Ghost include in your GitHub Action workflow?",
+		});
+		
+		while(confirmedLanguages && userDefinedTasks && apikey) {
+			var prompt = `For a ${detectedLanguages} program, generate a GitHub Action workflow that will include the following tasks: ${userDefinedTasks}. 
+				${additionalProjectInfo ? `Here's some additional info from the user: ${additionalProjectInfo}.` : ''}
+				Name it "Ghost-generated pipeline". Leave placeholders for things like version and at the end of generating the
+				GitHub Action, tell the user what their next steps should be in a comment`;
 
+			var GHA = await ai.chatGPTRequest(prompt);
+			console.log(GHA);
 
-
-
-		// Confirm detected languages
-
-		// Ask for tasks to generate
+			// get current path
+			// if (GHA) {
+			// 	const currentPath = vscode.workspace.workspaceFolders?.[0].uri.fsPath;
+			// 	const newFile = vscode.Uri.parse('untitled:' + path.join(currentPath, 'temp.yml'));
+			// 	vscode.workspace.openTextDocument(newFile).then(document => {
+			// 		const edit = new vscode.WorkspaceEdit();
+			// 		edit.insert(newFile, new vscode.Position(0, 0), GHA);
+			// 		return vscode.workspace.applyEdit(edit).then(success => {
+			// 			if (success) {
+			// 				vscode.window.showTextDocument(document);
+			// 			} else {
+			// 				vscode.window.showInformationMessage('Error!');
+			// 			}
+			// 		});
+			// 	});
+			// }
+			
+		}
 
 		//Confirm GHA
 
@@ -70,5 +102,4 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(disposable);
 }
 
-// This method is called when your extension is deactivated
-export function deactivate() { }
+// function generateAndAcceptResponse(prompt: string, altPrompt:string)
