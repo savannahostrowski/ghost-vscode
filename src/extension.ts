@@ -1,8 +1,7 @@
 import * as vscode from 'vscode';
-
 import * as ai from './ai';
-import path = require('path');
-import assert = require('assert');
+import * as assert from 'assert';
+import { createTempFile, writeGHAFile } from './helpers';
 
 let apikey: string | undefined;
 
@@ -73,22 +72,8 @@ export function activate(context: vscode.ExtensionContext) {
 
 			GHA = await ai.chatGPTRequest(prompt);
 
-			const currentPath = vscode.workspace.workspaceFolders?.[0].uri.fsPath;
-			assert(currentPath !== undefined);
-			const newFile = vscode.Uri.parse('untitled:' + path.join(currentPath, 'temp.yml'));
-
-			vscode.workspace.openTextDocument(newFile).then(document => {
-				const edit = new vscode.WorkspaceEdit();
-				assert(GHA !== undefined);
-				edit.insert(newFile, new vscode.Position(0, 0), GHA);
-				return vscode.workspace.applyEdit(edit).then(success => {
-					if (success) {
-						vscode.window.showTextDocument(document);
-					} else {
-						vscode.window.showInformationMessage('Error!');
-					}
-				});
-			});
+			assert(GHA !== undefined);
+			createTempFile(GHA);
 
 			// Confirm tasks
 			const result = await vscode.window.showInformationMessage(`Would you like to save the workflow?`, 'Yes', 'No, update tasks', 'Cancel');
@@ -96,16 +81,11 @@ export function activate(context: vscode.ExtensionContext) {
 				return;
 			} else if (result === 'Yes') {
 				confirmedTasks = true;
-				
+
 				//Output GHA to a file called ghost-<timestamp>.yml in the .github/workflows directory
-				const currentPath = vscode.workspace.workspaceFolders?.[0].uri.fsPath;
-				if (currentPath) {
-					const ghostDir = path.join(currentPath, '.github/workflows');
-					const ghostFile = path.join(ghostDir, `ghost-${Date.now()}.yml`);
-					vscode.workspace.fs.createDirectory(vscode.Uri.file(ghostDir));
-					vscode.workspace.fs.writeFile(vscode.Uri.file(ghostFile), Buffer.from(GHA ?? ''));
-				}
+				writeGHAFile(GHA);
 			} else {
+
 				userDefinedTasks = await vscode.window.showInputBox({
 					placeHolder: "Enter tasks (comma separated)",
 					prompt: "What tasks should Ghost include in your GitHub Action workflow?",
