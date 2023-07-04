@@ -13,7 +13,7 @@ Ghost is an tool that intelligently scaffolds a GitHub Action workflow based on 
 3. Type "Ghost" to find "Ghost: Generate GitHub Action" from the menu.
 
 ## Installation
-Install the [Ghost]() VS Code extension from the VS Code Marketplace or via Extensions in the VS Code Activity Bar.
+Install the [Ghost](https://marketplace.visualstudio.com/items?itemName=SavannahOstrowski.ghost-vscode) VS Code extension from the VS Code Marketplace or via Extensions in the VS Code Activity Bar.
 
 ## Contributing
 Contributions are welcome! To get started, check out the [contributing guidelines](CONTRIBUTING.md).
