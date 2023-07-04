@@ -17,6 +17,7 @@ export async function createTempFile(contents: string) {
             edit.delete(document.uri, new vscode.Range(0, 0, document.lineCount, 0));
         }
 
+        // Insert GHA contents into a temp file
         edit.insert(newFile, new vscode.Position(0, 0), contents);
         return vscode.workspace.applyEdit(edit).then(success => {
             if (success) {
