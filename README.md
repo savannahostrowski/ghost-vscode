@@ -30,3 +30,6 @@ A big thank you to these wonderful humans for their contributions!
 <!-- prettier-ignore-end -->
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
+
+---
+<sup>The logo for Ghost VS Code was created with the assistance of DALL·E 2</sup>
