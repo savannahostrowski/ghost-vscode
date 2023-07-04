@@ -3,7 +3,7 @@
 
 **This is the VS Code version of the [Ghost CLI](https://github.com/savannahostrowski/ghost)**
 
-Ghost is an tool that intelligently scaffolds a GitHub Action workflow based on your local application stack and natural language, using OpenAI.
+Ghost is a tool that intelligently scaffolds a GitHub Action workflow based on your local application stack and natural language, using OpenAI.
 
 ![A screenshot of the Ghost UX flow](images/ghost-vscode.gif)
 
