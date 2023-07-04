@@ -19,7 +19,7 @@ jobs:
           node-version: 18
 
       - name: Install the dependencies
-        run: npm i
+        run: npm ci
 
       - name: Install VSCE
         run: npm install @vscode/vsce --save-dev
@@ -28,3 +28,14 @@ jobs:
         run: npm run deploy
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
+
+      - name: Init git User
+        run: |
+          git config --global user.email "savannahostrowski@gmail.com"
+          git config --global user.name "Release workflow"
+          
+      - name: Run release
+        run: |
+          npm run release --ci
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
