@@ -29,11 +29,15 @@ jobs:
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
 
+  create-gh-release:
+    runs-on: ubuntu-latest
+
+    steps:
       - name: Init git User
         run: |
           git config --global user.email "savannahostrowski@gmail.com"
           git config --global user.name "Release workflow"
-          
+
       - name: Run release
         run: |
           npm run release --ci
