@@ -10,8 +10,6 @@ export async function createTempFile(contents: string) {
     vscode.workspace.openTextDocument(newFile).then(document => {
         const edit = new vscode.WorkspaceEdit();
 
-        console.log(document.isDirty);
-
         // If a temp file already exists, delete its contents
         if (document.isDirty) {
             edit.delete(document.uri, new vscode.Range(0, 0, document.lineCount, 0));
