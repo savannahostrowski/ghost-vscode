@@ -2,7 +2,7 @@
   "name": "ghost-ai",
   "displayName": "Ghost AI",
   "description": "An experimental extension that uses AI to generate GitHub Actions workflow, using OpenAI",
-  "version": "0.0.1",
+  "version": "v0.0.7",
   "icon": "images/ghost-logo.png",
   "publisher": "savannahostrowski",
   "repository": {
