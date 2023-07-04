@@ -1,9 +1,10 @@
 {
-  "name": "ghost",
+  "name": "ghost-ai",
   "displayName": "ghost-vscode",
   "description": "An experimental extension that uses AI to generate GitHub Actions workflow, using OpenAI",
   "version": "0.0.1",
   "icon": "images/ghost-logo.png",
+  "publisher": "savannahostrowski",
   "repository": {
     "type": "git",
     "url": "https://github.com/savannahostrowski/ghost-vscode.git"
