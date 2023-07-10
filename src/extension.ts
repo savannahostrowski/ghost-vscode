@@ -8,6 +8,9 @@ let apikey: string | undefined;
 export function activate(context: vscode.ExtensionContext) {
 	let disposable = vscode.commands.registerCommand('ghost-vscode.generate', async () => {
 
+		// Check if API key is stored as environment variable
+		apikey = process.env.OPENAI_API_KEY;
+
 		// Ask for API key in command palette and store as environment variable
 		if (!apikey) {
 			apikey = await vscode.window.showInputBox({
@@ -20,7 +23,7 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 
 		// Get all files in workspace, ignore .json files, node_modules and .md, .gitignore
-		const workspaceFiles = await vscode.workspace.findFiles('**/*', '{.*,node_modules,*.json,*.md,*.gitignore,LICENSE*}');
+		const workspaceFiles = await vscode.workspace.findFiles('**/*', '{.*,node_modules,*.json,*.md,*.gitignore,LICENSE*,obj,bin,*.dll,*.sln}');
 		const fileNames = workspaceFiles.map(file => file.fsPath.split('/').pop());
 
 		// Create status bar item
@@ -61,7 +64,7 @@ export function activate(context: vscode.ExtensionContext) {
 			} else if (result === 'Yes') {
 				confirmedLanguages = true;
 			} else {
-				detectedLanguages = await vscode.window.showInputBox({
+				additionalInfo = await vscode.window.showInputBox({
 					placeHolder: "Enter languages (comma separated)",
 					prompt: "Give Ghost some more info about the languages used in this project",
 				});
