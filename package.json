@@ -23,7 +23,15 @@
         "command": "ghost-vscode.generate",
         "title": "Ghost: Generate GitHub Action"
       }
-    ]
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "when": "resourceFilename == .github",
+          "command": "ghost-vscode.generate"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
