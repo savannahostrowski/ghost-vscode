@@ -22,7 +22,7 @@ export function activate(context: vscode.ExtensionContext) {
 			process.env.OPENAI_API_KEY = apikey;
 		}
 
-		// Get all files in workspace, ignore .json files, node_modules and .md, .gitignore
+		// Get all files in workspace, ignore .json files, node_modules and .md, .gitignore, obj, bin, .dll, .sln files
 		const workspaceFiles = await vscode.workspace.findFiles('**/*', '{.*,node_modules,*.json,*.md,*.gitignore,LICENSE*,obj,bin,*.dll,*.sln}');
 		const fileNames = workspaceFiles.map(file => file.fsPath.split('/').pop());
 
