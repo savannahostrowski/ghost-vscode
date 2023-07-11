@@ -2,7 +2,7 @@
   "name": "ghost-ai",
   "displayName": "Ghost AI",
   "description": "An experimental extension that uses AI to generate GitHub Actions workflow, using OpenAI",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "icon": "images/ghost-logo.png",
   "publisher": "savannahostrowski",
   "repository": {
@@ -35,8 +35,7 @@
     "pretest": "npm run compile-tests && npm run compile && npm run lint",
     "lint": "eslint src --ext ts",
     "test": "node ./out/test/runTest.js",
-    "deploy": "vsce publish",
-    "release": "release-it"
+    "deploy": "vsce publish"
   },
   "devDependencies": {
     "@types/glob": "^8.1.0",
